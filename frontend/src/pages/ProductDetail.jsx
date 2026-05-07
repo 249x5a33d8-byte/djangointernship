@@ -22,7 +22,7 @@ const ProductDetail = () => {
         setProduct(prodRes.data);
         
         try {
-          const predRes = await api.get(`predictions/${id}/`);
+          const predRes = await api.get(`predict/${id}/`);
           setPrediction(predRes.data);
         } catch (e) {
           console.error("No prediction available", e);
