@@ -100,6 +100,44 @@ class ProductDeleteView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
+class ProductScrapeView(APIView):
+    """POST /api/products/scrape/ — Scrape product details from URL."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        url = request.data.get('url')
+        if not url:
+            return Response({'error': 'URL is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        from .scraper import scrape_product
+        result = scrape_product(url)
+
+        if not result['success']:
+            return Response({'error': result['error']}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Automatically create or find the product
+        data = result['data']
+        # Assign to first category as default for now
+        category = Category.objects.first()
+        
+        product, created = Product.objects.get_or_create(
+            name=data['name'],
+            defaults={
+                'description': f"Product scraped from {data['vendor']}",
+                'price': data['price'],
+                'image_url': data['image_url'],
+                'vendor': data['vendor'],
+                'affiliate_link': data['url'],
+                'category': category
+            }
+        )
+
+        serializer = ProductDetailSerializer(product)
+        return Response({
+            'message': 'Product scraped and added successfully' if created else 'Product already exists',
+            'product': serializer.data
+        }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
 
 # ============================================================
 # Product Comparison

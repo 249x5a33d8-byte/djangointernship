@@ -8,6 +8,7 @@ const Register = () => {
     username: '',
     email: '',
     password: '',
+    password2: '',
     phone: ''
   });
   const { register } = useContext(AuthContext);
@@ -72,6 +73,16 @@ const Register = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input 
               name="password"
+              type="password" 
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition"
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input 
+              name="password2"
               type="password" 
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition"
               onChange={handleChange} 

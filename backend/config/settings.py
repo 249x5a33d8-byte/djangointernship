@@ -150,3 +150,10 @@ CORS_ALLOW_CREDENTIALS = True
 # ============================================================
 ML_MODELS_DIR = BASE_DIR / 'ml_models'
 DATASETS_DIR = BASE_DIR / 'datasets'
+
+# ============================================================
+# Email Configuration
+# ============================================================
+# For local development, print emails to console.
+# To send real emails, change this to 'django.core.mail.backends.smtp.EmailBackend' and add SMTP credentials.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

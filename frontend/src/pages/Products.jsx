@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { Search, Filter, Star } from 'lucide-react';
+import { Search, Filter, Star, Plus, Link as LinkIcon, X } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 const Products = () => {
+  const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  
+  // Scraping state
+  const [showModal, setShowModal] = useState(false);
+  const [scrapeUrl, setScrapeUrl] = useState('');
+  const [scraping, setScraping] = useState(false);
 
   useEffect(() => {
     // Fetch categories
@@ -47,10 +54,38 @@ const Products = () => {
     fetchProducts(search, cat);
   };
 
+  const handleScrape = async (e) => {
+    e.preventDefault();
+    if (!scrapeUrl) return;
+    setScraping(true);
+    try {
+      const res = await api.post('products/scrape/', { url: scrapeUrl });
+      alert(res.data.message);
+      setShowModal(false);
+      setScrapeUrl('');
+      fetchProducts(); // Refresh list
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to scrape product. Try again.");
+    } finally {
+      setScraping(false);
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 relative">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-dark">Explore Products</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-3xl font-bold text-dark">Explore Products</h1>
+          {user && (
+            <button 
+              onClick={() => setShowModal(true)}
+              className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition shadow"
+              title="Add Product via URL"
+            >
+              <Plus size={20} />
+            </button>
+          )}
+        </div>
         
         <form onSubmit={handleSearch} className="flex w-full md:w-auto gap-2">
           <div className="relative w-full md:w-64">
@@ -78,6 +113,37 @@ const Products = () => {
           </button>
         </form>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="font-bold text-lg flex items-center gap-2"><LinkIcon size={18}/> Add Product via URL</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-red-500">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleScrape} className="p-6">
+              <p className="text-sm text-gray-600 mb-4">Paste an Amazon or Flipkart URL to dynamically scrape the product details and add it to IntelliShop.</p>
+              <input 
+                type="url" 
+                required
+                className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:ring-2 focus:ring-primary outline-none"
+                placeholder="https://www.amazon.in/dp/..." 
+                value={scrapeUrl}
+                onChange={(e) => setScrapeUrl(e.target.value)}
+              />
+              <button 
+                type="submit" 
+                disabled={scraping}
+                className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-blue-300 flex justify-center"
+              >
+                {scraping ? 'Scraping live data...' : 'Extract & Add Product'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

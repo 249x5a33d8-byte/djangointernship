@@ -25,14 +25,14 @@ class Command(BaseCommand):
 
         # Create Products
         products_data = [
-            {'name': 'MacBook Pro 14"', 'category': 'Laptops', 'base_price': 1999.99},
-            {'name': 'Dell XPS 13', 'category': 'Laptops', 'base_price': 1399.99},
-            {'name': 'iPhone 15 Pro', 'category': 'Smartphones', 'base_price': 999.99},
-            {'name': 'Samsung Galaxy S24 Ultra', 'category': 'Smartphones', 'base_price': 1199.99},
-            {'name': 'Sony WH-1000XM5', 'category': 'Headphones', 'base_price': 399.99},
-            {'name': 'AirPods Pro 2', 'category': 'Headphones', 'base_price': 249.99},
-            {'name': 'LG C3 OLED TV', 'category': 'Electronics', 'base_price': 1499.99},
-            {'name': 'Dyson V15 Detect', 'category': 'Home Appliances', 'base_price': 749.99},
+            {'name': 'MacBook Pro 14"', 'category': 'Laptops', 'base_price': 1999.99, 'img': 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800'},
+            {'name': 'Dell XPS 13', 'category': 'Laptops', 'base_price': 1399.99, 'img': 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800'},
+            {'name': 'iPhone 15 Pro', 'category': 'Smartphones', 'base_price': 999.99, 'img': 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800'},
+            {'name': 'Samsung Galaxy S24 Ultra', 'category': 'Smartphones', 'base_price': 1199.99, 'img': 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800'},
+            {'name': 'Sony WH-1000XM5', 'category': 'Headphones', 'base_price': 399.99, 'img': 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800'},
+            {'name': 'AirPods Pro 2', 'category': 'Headphones', 'base_price': 249.99, 'img': 'https://images.unsplash.com/photo-1606220588913-b3aec4ce68d2?w=800'},
+            {'name': 'LG C3 OLED TV', 'category': 'Electronics', 'base_price': 1499.99, 'img': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800'},
+            {'name': 'Dyson V15 Detect', 'category': 'Home Appliances', 'base_price': 749.99, 'img': 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800'},
         ]
 
         for p_data in products_data:
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                         'price': round(vendor_price, 2),
                         'original_price': round(vendor_price * 1.1, 2),
                         'affiliate_link': f"https://{vendor.lower()}.com/dp/{random.randint(100000, 999999)}",
-                        'image_url': f"https://via.placeholder.com/400x400?text={p_data['name'].replace(' ', '+')}",
+                        'image_url': p_data['img'],
                         'rating': round(random.uniform(3.5, 4.9), 1),
                         'review_count': random.randint(100, 5000),
                     }

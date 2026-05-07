@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const res = await api.get('users/profile/');
+          const res = await api.get('auth/profile/');
           setUser(res.data);
         } catch (err) {
           localStorage.removeItem('token');
@@ -24,14 +24,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const res = await api.post('users/login/', { username, password });
+    const res = await api.post('auth/login/', { username, password });
     localStorage.setItem('token', res.data.access);
-    const profileRes = await api.get('users/profile/');
+    const profileRes = await api.get('auth/profile/');
     setUser(profileRes.data);
   };
 
   const register = async (userData) => {
-    await api.post('users/register/', userData);
+    await api.post('auth/register/', userData);
     await login(userData.username, userData.password);
   };
 
